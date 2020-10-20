@@ -44,10 +44,10 @@ public class Tokenizer {
         // 直到查看下一个字符不是数字为止
         // 清空字符串
         str_token="";
-        // 前进一个字符，并存储这个字符
-        char peek = it.nextChar();
         //记录初始位置
         Pos p1=it.ptr;
+        // 前进一个字符，并存储这个字符
+        char peek = it.nextChar();
         // 将字符串和字符连接起来
         str_token+=peek;
         // 查看下一个字符 但是不移动指针
@@ -67,7 +67,7 @@ public class Tokenizer {
             return new Token(TokenType.Uint,num,p1,it.ptr);
         }catch(Exception e){
             // Token 的 Value 应填写数字的值
-            throw new Error("Not implemented");
+            throw new TokenizeError(ErrorCode.ExpectedToken,p1);
         }
     }
 
@@ -75,10 +75,10 @@ public class Tokenizer {
         // 直到查看下一个字符不是数字或字母为止
         // 清空字符串
         str_token="";
-        // 前进一个字符，并存储这个字符
-        char peek = it.nextChar();
         //记录初始位置
         Pos p1=it.ptr;
+        // 前进一个字符，并存储这个字符
+        char peek = it.nextChar();
         // 将字符串和字符连接起来
         str_token+=peek;
         // 查看下一个字符 但是不移动指针
@@ -100,7 +100,7 @@ public class Tokenizer {
             else return new Token(TokenType.Ident,str_token,p1,it.ptr);
         }catch(Exception e){
             // Token 的 Value 应填写标识符或关键字的字符串
-            throw new Error("Not implemented");
+            throw new TokenizeError(ErrorCode.ExpectedToken,p1);
         }
     }
 
@@ -110,52 +110,52 @@ public class Tokenizer {
                 try{
                     return new Token(TokenType.Plus, '+', it.previousPos(), it.currentPos());
                 }catch (Exception e){
-                    throw new Error("Not implemented");
+                    throw new TokenizeError(ErrorCode.ExpectedToken,it.previousPos());
                 }
 
             case '-':
                 try{
                     return new Token(TokenType.Minus, '-', it.previousPos(), it.currentPos());
                 }catch (Exception e){
-                    throw new Error("Not implemented");
+                    throw new TokenizeError(ErrorCode.ExpectedToken,it.previousPos());
                 }
 
             case '*':
                 try{
                     return new Token(TokenType.Mult, '*', it.previousPos(), it.currentPos());
                 }catch (Exception e){
-                    throw new Error("Not implemented");
+                    throw new TokenizeError(ErrorCode.ExpectedToken,it.previousPos());
                 }
 
             case '/':
                 try{
                     return new Token(TokenType.Div, '/', it.previousPos(), it.currentPos());
                 }catch (Exception e){
-                    throw new Error("Not implemented");
+                    throw new TokenizeError(ErrorCode.ExpectedToken,it.previousPos());
                 }
             case '=':
                 try{
                     return new Token(TokenType.Equal, '=', it.previousPos(), it.currentPos());
                 }catch (Exception e){
-                    throw new Error("Not implemented");
+                    throw new TokenizeError(ErrorCode.ExpectedToken,it.previousPos());
                 }
             case ';':
                 try{
                     return new Token(TokenType.Semicolon, ';', it.previousPos(), it.currentPos());
                 }catch (Exception e){
-                    throw new Error("Not implemented");
+                    throw new TokenizeError(ErrorCode.ExpectedToken,it.previousPos());
                 }
             case '(':
                 try{
                     return new Token(TokenType.LParen, '(', it.previousPos(), it.currentPos());
                 }catch (Exception e){
-                    throw new Error("Not implemented");
+                    throw new TokenizeError(ErrorCode.ExpectedToken,it.previousPos());
                 }
             case ')':
                 try{
                     return new Token(TokenType.RParen, ')', it.previousPos(), it.currentPos());
                 }catch (Exception e){
-                    throw new Error("Not implemented");
+                    throw new TokenizeError(ErrorCode.ExpectedToken,it.previousPos());
                 }
             default:
                 // 不认识这个输入，摸了
@@ -171,15 +171,15 @@ public class Tokenizer {
 
     // 判断是否为保留字
     private TokenType isKeepWord(String str){
-        if(str.equals(TokenType.Begin.toString()))
+        if(str.toLowerCase().equals(TokenType.Begin.toString().toLowerCase()))
             return TokenType.Begin;
-        else if(str.equals(TokenType.End.toString()))
+        else if(str.toLowerCase().equals(TokenType.End.toString().toLowerCase()))
             return TokenType.End;
-        else if(str.equals(TokenType.Var.toString()))
+        else if(str.toLowerCase().equals(TokenType.Var.toString().toLowerCase()))
             return TokenType.Var;
-        else if(str.equals(TokenType.Const.toString()))
+        else if(str.toLowerCase().equals(TokenType.Const.toString().toLowerCase()))
             return TokenType.Const;
-        else if(str.equals(TokenType.Print.toString()))
+        else if(str.toLowerCase().equals(TokenType.Print.toString().toLowerCase()))
             return TokenType.Print;
         else return null;
     };
