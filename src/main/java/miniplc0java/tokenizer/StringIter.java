@@ -17,6 +17,7 @@ public class StringIter {
     // 指向下一个要读取的字符
     Pos ptrNext = new Pos(0, 0);
 
+    // 指向当前读取的字符
     Pos ptr = new Pos(0, 0);
 
     boolean initialized = false;
@@ -62,12 +63,15 @@ public class StringIter {
      * 获取下一个字符的位置
      */
     public Pos nextPos() {
+        // 若读到文件末尾
         if (ptr.row >= linesBuffer.size()) {
             throw new Error("advance after EOF");
         }
+        // 若读到某一行的末尾 --> 应该换下一行
         if (ptr.col == linesBuffer.get(ptr.row).length() - 1) {
             return new Pos(ptr.row + 1, 0);
         }
+        // 同一行的下一个字符
         return new Pos(ptr.row, ptr.col + 1);
     }
 
@@ -82,12 +86,15 @@ public class StringIter {
      * 获取上一个字符的位置
      */
     public Pos previousPos() {
+        // 若在最开始处 --> 没有上一个字符
         if (ptr.row == 0 && ptr.col == 0) {
             throw new Error("previous position from beginning");
         }
+        // 某一行的第一个 --> 上一个字符为上一行的最后一个
         if (ptr.col == 0) {
             return new Pos(ptr.row - 1, linesBuffer.get(ptr.row - 1).length() - 1);
         }
+        // 同一行的前一列
         return new Pos(ptr.row, ptr.col - 1);
     }
 

@@ -1,5 +1,8 @@
 package miniplc0java.tokenizer;
 
+/**
+ * 定义的 token 种类
+ */
 public enum TokenType {
     /** 空 */
     None,
