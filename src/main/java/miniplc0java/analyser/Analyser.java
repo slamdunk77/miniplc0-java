@@ -203,7 +203,7 @@ public final class Analyser {
     }
 
     private void analyseMain() throws CompileError {
-        throw new Error("Not implemented");
+        throw new AnalyzeError(ErrorCode.ExpectedToken,new Pos(0,0));
     }
 
     private void analyseConstantDeclaration() throws CompileError {
