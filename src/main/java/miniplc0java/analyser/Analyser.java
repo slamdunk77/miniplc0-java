@@ -237,9 +237,9 @@ public final class Analyser {
     private void analyseVariableDeclaration() throws CompileError {
         // 示例函数，示例如何解析变量声明 变量声明 -> 变量声明语句*
         // 如果下一个 token 是 var 就继续
-        while (nextIf(TokenType.Var) != null) {
+        while (check(TokenType.Var)) {
             // 变量声明语句 -> 'var' 变量名 ('=' 表达式)? ';'
-
+            next();
             // 变量名
             var nameToken = expect(TokenType.Ident);
 
