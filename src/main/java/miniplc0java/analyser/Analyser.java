@@ -447,7 +447,9 @@ public final class Analyser {
             nextIf(TokenType.Plus);
             negate = false;
         }
-
+        if (negate) {
+            instructions.add(new Instruction(Operation.SUB));
+        }
         if (check(TokenType.Ident)) {
             // 是标识符
             Token nameToken=expect(TokenType.Ident);
@@ -484,9 +486,5 @@ public final class Analyser {
             // 都不是，摸了
             throw new ExpectedTokenError(List.of(TokenType.Ident, TokenType.Uint, TokenType.LParen), next());
         }
-        if (negate) {
-            instructions.add(new Instruction(Operation.SUB));
-        }
-
     }
 }
