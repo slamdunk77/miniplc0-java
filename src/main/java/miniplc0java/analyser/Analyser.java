@@ -219,6 +219,8 @@ public final class Analyser {
             // 加入符号表
             String name = (String) nameToken.getValue();
             addSymbol(name, true, true, nameToken.getStartPos());
+            // 设置符号已初始化
+            initializeSymbol(name, nameToken.getStartPos());
 
             // 等于号
             expect(TokenType.Equal);
@@ -257,6 +259,8 @@ public final class Analyser {
                 initialized = true;
                 // 加入符号表
                 addSymbol(name, true, false, nameToken.getStartPos());
+                // 设置符号已初始化
+                initializeSymbol(name, nameToken.getStartPos());
                 // 分析初始化的表达式
                 analyseExpression();
                 // 分号
@@ -414,6 +418,7 @@ public final class Analyser {
         // 项 -> 因子 (乘法运算符 因子)*
         // 因子
         analyseFactor();
+        
         while (true) {
             // 预读可能是运算符的 token
             var op = peek();
@@ -441,19 +446,15 @@ public final class Analyser {
         boolean negate;
         if (nextIf(TokenType.Minus) != null) {
             negate = true;
-            // 计算结果需要被 0 减
             instructions.add(new Instruction(Operation.LIT, 0));
-        } else {
+        }
+        else {
             nextIf(TokenType.Plus);
             negate = false;
-        }
-        if (negate) {
-            instructions.add(new Instruction(Operation.SUB));
         }
         if (check(TokenType.Ident)) {
             // 是标识符
             Token nameToken=expect(TokenType.Ident);
-
             // 加载标识符的值
             String name = (String)nameToken.getValue();
             var symbol = symbolTable.get(name);
@@ -476,15 +477,19 @@ public final class Analyser {
                 value = -value;
             }
             instructions.add(new Instruction(Operation.LIT, value));
-        } else if (check(TokenType.LParen)) {
+        }
+        else if (check(TokenType.LParen)) {
             expect(TokenType.LParen);
-            // 是表达式
-            // 调用相应的处理函数
+            // 表达式调用相应的处理函数
             analyseExpression();
             expect(TokenType.RParen);
-        } else {
+        }
+        else {
             // 都不是，摸了
             throw new ExpectedTokenError(List.of(TokenType.Ident, TokenType.Uint, TokenType.LParen), next());
+        }
+        if (negate) {
+            instructions.add(new Instruction(Operation.SUB));
         }
     }
 }
