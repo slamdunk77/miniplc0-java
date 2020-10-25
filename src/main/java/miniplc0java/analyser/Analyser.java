@@ -470,9 +470,9 @@ public final class Analyser {
             Token numToken=expect(TokenType.Uint);
             // 加载整数值
             int value = (int) numToken.getValue();
-            if (negate) {
-                value = -value;
-            }
+//            if (negate) {
+//                value = -value;
+//            }
             instructions.add(new Instruction(Operation.LIT, value));
         } else if (check(TokenType.LParen)) {
             expect(TokenType.LParen);
