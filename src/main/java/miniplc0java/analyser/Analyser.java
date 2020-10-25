@@ -350,7 +350,7 @@ public final class Analyser {
             }
 
             // 运算符
-            next();
+            op=next();
 
             // 项
             analyseItem();
@@ -416,13 +416,13 @@ public final class Analyser {
         analyseFactor();
         while (true) {
             // 预读可能是运算符的 token
-            Token op = null;
+            var op = peek();
+            if (op.getTokenType() != TokenType.Div && op.getTokenType() != TokenType.Mult) {
+                break;
+            }
+            
             // 运算符
-            if(check(TokenType.Div))
-                op=expect(TokenType.Div);
-            else if(check(TokenType.Mult))
-                op=expect(TokenType.Mult);
-            else break;
+            op=next();
 
             // 因子
             analyseFactor();
@@ -484,9 +484,9 @@ public final class Analyser {
             // 都不是，摸了
             throw new ExpectedTokenError(List.of(TokenType.Ident, TokenType.Uint, TokenType.LParen), next());
         }
-
         if (negate) {
             instructions.add(new Instruction(Operation.SUB));
         }
+
     }
 }
