@@ -208,13 +208,11 @@ public final class Analyser {
     }
 
     private void analyseConstantDeclaration() throws CompileError {
-        // 示例函数，示例如何解析常量声明
         // 常量声明 -> 常量声明语句*
-
         // 如果下一个 token 是 const 就继续
-        while (nextIf(TokenType.Const) != null) {
+        while (check(TokenType.Const)) {
             // 常量声明语句 -> 'const' 变量名 '=' 常表达式 ';'
-
+            next();
             // 变量名 token类型
             var nameToken = expect(TokenType.Ident);
 
@@ -284,7 +282,6 @@ public final class Analyser {
         if(check(TokenType.Var) || check(TokenType.Const) ||
          check(TokenType.Ident) || check(TokenType.Print) || check(TokenType.None)){
             while (true) {
-                // 如果下一个 token 是……
                 var peeked = peek();
                 // 赋值语句
                 if (peeked.getTokenType() == TokenType.Ident) {
@@ -296,7 +293,6 @@ public final class Analyser {
                 else if (peeked.getTokenType() == TokenType.Print) {
                     // 调用相应的分析函数
                     analyseOutputStatement();
-                    // 如果遇到其他非终结符的 FIRST 集呢？
                 }
                 // 常量声明语句
                 else if(peeked.getTokenType() == TokenType.Const){
@@ -308,10 +304,10 @@ public final class Analyser {
                     // 调用相应的分析函数
                     analyseVariableDeclaration();
                 }
-                else {
-                    // 都不是，摸了
-                    break;
-                }
+                // 空语句
+                // 变量声明语句
+                else if(peeked.getTokenType() == TokenType.None) continue;
+                else break;
             }
         }
         else {
@@ -493,6 +489,5 @@ public final class Analyser {
         if (negate) {
             instructions.add(new Instruction(Operation.SUB));
         }
-//        throw new AnalyzeError();
     }
 }
