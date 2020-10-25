@@ -412,12 +412,9 @@ public final class Analyser {
 
     private void analyseItem() throws CompileError {
         // 项 -> 因子 (乘法运算符 因子)*
-
         // 因子
         analyseFactor();
-
         while (true) {
-
             // 预读可能是运算符的 token
             Token op = null;
             // 运算符
@@ -431,9 +428,9 @@ public final class Analyser {
             analyseFactor();
 
             // 生成代码
-            if (op.getTokenType() == TokenType.Plus) {
+            if (op.getTokenType() == TokenType.Mult) {
                 instructions.add(new Instruction(Operation.MUL));
-            } else if (op.getTokenType() == TokenType.Minus) {
+            } else if (op.getTokenType() == TokenType.Div) {
                 instructions.add(new Instruction(Operation.DIV));
             }
         }
