@@ -231,9 +231,7 @@ public final class Analyser {
             // 分号
             expect(TokenType.Semicolon);
 
-            // 这里把常量值直接放进栈里，位置和符号表记录的一样。
-            // 更高级的程序还可以把常量的值记录下来，遇到相应的变量直接替换成这个常数值，
-            // 我们这里就先不这么干了。
+            // 这里把常量值直接放进栈里
             instructions.add(new Instruction(Operation.LIT, value));
         }
     }
@@ -255,12 +253,12 @@ public final class Analyser {
 
             // 下个 token 是等于号吗？如果是的话分析初始化
             if(check(TokenType.Equal)) {
-                //变量初始化
+                // 前进一个符号
+                expect(TokenType.Equal);
+                // 变量初始化
                 initialized = true;
                 // 加入符号表
                 addSymbol(name, true, false, nameToken.getStartPos());
-                // 前进一个符号
-                expect(TokenType.Equal);
                 // 分析初始化的表达式
                 analyseExpression();
                 // 分号
@@ -316,7 +314,10 @@ public final class Analyser {
                 }
             }
         }
-        else throw new AnalyzeError(ErrorCode.IncompleteExpression,new Pos(0,0));
+        else {
+            var peeked = peek();
+            throw new AnalyzeError(ErrorCode.IncompleteExpression,peeked.getStartPos());
+        }
     }
 
     private int analyseConstantExpression() throws CompileError {
@@ -442,7 +443,6 @@ public final class Analyser {
 
     private void analyseFactor() throws CompileError {
         // 因子 -> 符号? (标识符 | 无符号整数 | '(' 表达式 ')')
-
         boolean negate;
         if (nextIf(TokenType.Minus) != null) {
             negate = true;
@@ -469,13 +469,18 @@ public final class Analyser {
             }
             var offset = getOffset(name, nameToken.getStartPos());
             instructions.add(new Instruction(Operation.LOD, offset));
-        } else if (check(TokenType.Uint)) {
+        }
+        else if (check(TokenType.Uint)) {
             // 是整数
             Token numToken=expect(TokenType.Uint);
             // 加载整数值
-            int value = (int)numToken.getValue();
+            int value = (int) numToken.getValue();
+            if (negate) {
+                value = -value;
+            }
             instructions.add(new Instruction(Operation.LIT, value));
         } else if (check(TokenType.LParen)) {
+            expect(TokenType.LParen);
             // 是表达式
             // 调用相应的处理函数
             analyseExpression();
