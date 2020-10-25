@@ -204,6 +204,8 @@ public final class Analyser {
 
     private void analyseMain() throws CompileError {
 //        throw new AnalyzeError(ErrorCode.NeedIdentifier,new Pos(0,0));
+        analyseConstantDeclaration();
+        analyseVariableDeclaration();
         analyseStatementSequence();
     }
 
@@ -285,7 +287,7 @@ public final class Analyser {
     private void analyseStatementSequence() throws CompileError {
         // 语句序列 -> 语句*
         // 语句 -> 赋值语句 | 输出语句 | 空语句
-        if(check(TokenType.Var) || check(TokenType.Const) ||
+        if(
          check(TokenType.Ident) || check(TokenType.Print) || check(TokenType.None)){
             while (true) {
                 var peeked = peek();
@@ -300,16 +302,16 @@ public final class Analyser {
                     // 调用相应的分析函数
                     analyseOutputStatement();
                 }
-                // 常量声明语句
-                else if(peeked.getTokenType() == TokenType.Const){
-                    // 调用相应的分析函数
-                    analyseConstantDeclaration();
-                }
-                // 变量声明语句
-                else if(peeked.getTokenType() == TokenType.Var){
-                    // 调用相应的分析函数
-                    analyseVariableDeclaration();
-                }
+//                // 常量声明语句
+//                else if(peeked.getTokenType() == TokenType.Const){
+//                    // 调用相应的分析函数
+//                    analyseConstantDeclaration();
+//                }
+//                // 变量声明语句
+//                else if(peeked.getTokenType() == TokenType.Var){
+//                    // 调用相应的分析函数
+//                    analyseVariableDeclaration();
+//                }
                 // 空语句
                 // 变量声明语句
                 else if(peeked.getTokenType() == TokenType.None) continue;
@@ -418,7 +420,7 @@ public final class Analyser {
         // 项 -> 因子 (乘法运算符 因子)*
         // 因子
         analyseFactor();
-        
+
         while (true) {
             // 预读可能是运算符的 token
             var op = peek();
