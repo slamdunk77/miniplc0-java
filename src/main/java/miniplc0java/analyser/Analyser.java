@@ -271,6 +271,8 @@ public final class Analyser {
             // 如果没有初始化的话在栈里推入一个初始值
             if (!initialized) {
                 addSymbol(name, false, false, nameToken.getStartPos());
+                // 分号
+                expect(TokenType.Semicolon);
                 instructions.add(new Instruction(Operation.LIT, 0));
             }
         }
