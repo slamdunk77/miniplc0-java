@@ -245,38 +245,34 @@ public final class Analyser {
             next();
             // 变量名
             var nameToken = expect(TokenType.Ident);
+            // 加入符号表，请填写名字和当前位置（报错用）
+            String name = (String) nameToken.getValue();
 
             // 变量初始化了吗
             boolean initialized = false;
 
-            // 加入符号表，请填写名字和当前位置（报错用）
-            String name = (String) nameToken.getValue();
-
             // 下个 token 是等于号吗？如果是的话分析初始化
-            if(check(TokenType.Equal)) {
-                // 前进一个符号
-                expect(TokenType.Equal);
+            if(nextIf(TokenType.Equal)!=null) {
                 // 变量初始化
                 initialized = true;
-                // 加入符号表
-                addSymbol(name, true, false, nameToken.getStartPos());
-
                 // 分析初始化的表达式
                 analyseExpression();
-                // 分号
-                expect(TokenType.Semicolon);
-
-                // 存储值
-                var offset = getOffset(name, nameToken.getStartPos());
-                instructions.add(new Instruction(Operation.LIT,offset));
-                instructions.add(new Instruction(Operation.STO,offset));
             }
+            // 分号
+            expect(TokenType.Semicolon);
+            // 加入符号表
+            addSymbol(name, initialized, false, nameToken.getStartPos());
+//
+//          // 存储值
+//                var offset = getOffset(name, nameToken.getStartPos());
+//                instructions.add(new Instruction(Operation.LIT,offset));
+//                instructions.add(new Instruction(Operation.STO,offset));
 
             // 如果没有初始化的话在栈里推入一个初始值
             if (!initialized) {
-                addSymbol(name, false, false, nameToken.getStartPos());
-                // 分号
-                expect(TokenType.Semicolon);
+//                addSymbol(name, false, false, nameToken.getStartPos());
+//                // 分号
+//                expect(TokenType.Semicolon);
                 instructions.add(new Instruction(Operation.LIT, 0));
             }
         }
