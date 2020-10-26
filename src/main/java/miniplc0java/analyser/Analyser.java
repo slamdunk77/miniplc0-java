@@ -203,7 +203,6 @@ public final class Analyser {
     }
 
     private void analyseMain() throws CompileError {
-//        throw new AnalyzeError(ErrorCode.NeedIdentifier,new Pos(0,0));
         analyseConstantDeclaration();
         analyseVariableDeclaration();
         analyseStatementSequence();
@@ -287,34 +286,21 @@ public final class Analyser {
     private void analyseStatementSequence() throws CompileError {
         // 语句序列 -> 语句*
         // 语句 -> 赋值语句 | 输出语句 | 空语句
-        if(
-         check(TokenType.Ident) || check(TokenType.Print) || check(TokenType.None)){
+        if(check(TokenType.Ident) || check(TokenType.Print) || check(TokenType.Semicolon)){
             while (true) {
                 var peeked = peek();
                 // 赋值语句
                 if (peeked.getTokenType() == TokenType.Ident) {
                     // 调用相应的分析函数
                     analyseAssignmentStatement();
-                    // 如果遇到其他非终结符的 FIRST 集呢？
                 }
                 // 输出语句
                 else if (peeked.getTokenType() == TokenType.Print) {
                     // 调用相应的分析函数
                     analyseOutputStatement();
                 }
-//                // 常量声明语句
-//                else if(peeked.getTokenType() == TokenType.Const){
-//                    // 调用相应的分析函数
-//                    analyseConstantDeclaration();
-//                }
-//                // 变量声明语句
-//                else if(peeked.getTokenType() == TokenType.Var){
-//                    // 调用相应的分析函数
-//                    analyseVariableDeclaration();
-//                }
                 // 空语句
-                // 变量声明语句
-                else if(peeked.getTokenType() == TokenType.None) continue;
+                else if(peeked.getTokenType() == TokenType.Semicolon) continue;
                 else break;
             }
         }
@@ -427,7 +413,6 @@ public final class Analyser {
             if (op.getTokenType() != TokenType.Div && op.getTokenType() != TokenType.Mult) {
                 break;
             }
-            
             // 运算符
             op=next();
 
