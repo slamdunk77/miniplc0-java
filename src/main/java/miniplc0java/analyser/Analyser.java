@@ -281,7 +281,7 @@ public final class Analyser {
     private void analyseStatementSequence() throws CompileError {
         // 语句序列 -> 语句*
         // 语句 -> 赋值语句 | 输出语句 | 空语句
-        if(check(TokenType.Ident) || check(TokenType.Print) || check(TokenType.Semicolon) || check(TokenType.None)){
+        if(check(TokenType.Ident) || check(TokenType.Print) || check(TokenType.Semicolon)){
             while (true) {
                 var peeked = peek();
                 // 赋值语句
@@ -295,7 +295,9 @@ public final class Analyser {
                     analyseOutputStatement();
                 }
                 // 空语句
-                else if(peeked.getTokenType() == TokenType.None || peeked.getTokenType() == TokenType.Semicolon) continue;
+                else if(peeked.getTokenType() == TokenType.Semicolon) {
+                    expect(TokenType.Semicolon);
+                }
                 else break;
             }
         }
