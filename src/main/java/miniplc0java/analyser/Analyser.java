@@ -260,8 +260,7 @@ public final class Analyser {
                 initialized = true;
                 // 加入符号表
                 addSymbol(name, true, false, nameToken.getStartPos());
-                // 设置符号已初始化
-                initializeSymbol(name, nameToken.getStartPos());
+
                 // 分析初始化的表达式
                 analyseExpression();
                 // 分号
@@ -286,7 +285,7 @@ public final class Analyser {
     private void analyseStatementSequence() throws CompileError {
         // 语句序列 -> 语句*
         // 语句 -> 赋值语句 | 输出语句 | 空语句
-        if(check(TokenType.Ident) || check(TokenType.Print) || check(TokenType.Semicolon)){
+        if(check(TokenType.Ident) || check(TokenType.Print) || check(TokenType.Semicolon) || check(TokenType.None)){
             while (true) {
                 var peeked = peek();
                 // 赋值语句
@@ -300,7 +299,7 @@ public final class Analyser {
                     analyseOutputStatement();
                 }
                 // 空语句
-                else if(peeked.getTokenType() == TokenType.Semicolon) continue;
+                else if(peeked.getTokenType() == TokenType.None || peeked.getTokenType() == TokenType.Semicolon) continue;
                 else break;
             }
         }
